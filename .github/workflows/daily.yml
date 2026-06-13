@@ -1,25 +1,30 @@
 name: Daily Weather Alert Bot
 
 on:
+  workflow_dispatch: # Allows you to click a button to test it instantly
   schedule:
-    - cron: "30 2 * * *"   # 8:00 AM IST (2:30 UTC)
-  workflow_dispatch:
+    - cron: '30 2 * * *' # Automatically runs every day at 2:30 AM UTC (8:00 AM IST)
 
 jobs:
-  run-weather:
+  run-weather-bot:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository code
         uses: actions/checkout@v3
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
+          python-version: '3.x'
 
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Run script
+      - name: Run Weather Bot
+        env:
+          OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }}
+          SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
+          SENDER_PASSWORD: ${{ secrets.SENDER_PASSWORD }}
+          RECEIVER_EMAIL: ${{ secrets.RECEIVER_EMAIL }}
         run: python weather.py
